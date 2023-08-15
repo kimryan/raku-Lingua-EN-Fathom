@@ -1,0 +1,204 @@
+=begin pod
+
+=head1 NAME
+
+Lingua::EN::Fathom - Measure readability of English text
+
+=head1 SYNOPSIS
+
+=begin code :lang<raku>
+
+use Lingua::EN::Fathom;
+
+my $sample =
+q{Determine the readability of the given text file or block. Words
+need to contain letters, and optionally numbers (such as Gr8). There
+is no understanding of context.
+
+Numbers like 1.234 are valid, but strings like #### are ignored.};
+
+my $f = Fathom.new();
+$f.analyse_block($sample,0);
+say $f.report;
+
+#`[
+Output is:
+Number of characters       : 227
+Number of words            : 37
+Percent of complex words   : 13.51
+Average syllables per word : 1.5676
+Number of sentences        : 4
+Average words per sentence : 9.2500
+Number of text lines       : 4
+Number of blank lines      : 1
+Number of paragraphs       : 2
+]
+
+READABILITY INDICES
+
+Fog                        : 9.1054s
+Flesch                     : 64.8300
+Flesch-Kincaid             : 6.5148
+
+# Access individual statistics
+say $f.percent_complex_words;  # 13.51
+
+# Analyse file contents, accumualting statisitics over succesive calls
+my $accumulate = 1;
+$f.analyse_file('sample.txt',$accumulate);
+
+=end code
+
+=head1 REQUIRES
+
+Lingua::EN::Syllable, Lingua::EN::Sentence
+
+=head1 DESCRIPTION
+
+This module analyses English text in either a string or file. Totals are
+then calculated for the number of characters, words, sentences, blank
+and non blank (text) lines and paragraphs.
+
+Three common readability statistics are also derived, the Fog, Flesch and
+Kincaid indices.
+
+All of these properties can be accessed through method attributed, or by
+generating a text report.
+
+
+=head1 METHODS
+
+=head2 new
+
+The C<new> method creates an instance of an Fathom  object This must be called
+before any of the following methods are invoked. Note that the object only
+needs to be created once, and can be reused with new input data.
+
+   my $f = Fathom.new();
+
+=head2 analyse_file
+
+The C<analyse_file> method takes as input the name of a text file. Various
+text based statistics are calculated for the file. This method and
+C<analyse_block> are prerequisites for all the following methods. An optional
+argument may be supplied to control accumulation of statistics. If set to
+a non zero value, all statistics are accumulated with each successive call.
+
+    $f.analyse_file('sample.txt',$accumulate);
+
+
+=head2 analyse_block
+
+The C<analyse_block> method takes as input a text string. Various
+text based statistics are calculated for the file. This method or
+C<analyse_file> is a prerequisites for all the following methods. An optional
+argument may be supplied to control accumulation of statistics. If set to
+a non zero value, all statistics are accumulated with each successive call.
+
+   $f.analyse_block($sample,0);
+   
+head2 report
+
+    say $f.report;
+
+Produces a text based report containing all Fathom statistics for
+the currently analysed text block or file. Shopuld only be called after a call
+to analyse_block or analyse_file, The return value is a string containing
+the report contents   
+
+=head2 attributes
+
+Accessed the individual readability statistics 
+    say $f.num_words;
+    
+The attributes are    
+ 
+    $.num_sents;
+    $.num_text_lines;
+    $.num_blank_lines;
+    $.num_paragraphs;    
+    $.num_chars;
+    $.num_syllables;
+    $.num_complex_words;
+    $.words_per_sentence;
+    $.syllables_per_word ;
+    $.percent_complex_words;    
+    
+    $.fog;
+    $.flesch;
+    $.kincaid;    
+
+
+=head2 READABILITY
+
+Three indices of text readability are calculated. They all measure complexity as
+a function of syllables per word and words per sentence. They assume the text is
+well formed and logical. You could analyse a passage of nonsensical English and
+find the readability is quite good, provided the words are not too complex and
+the sentences not too long.
+
+For more information see: L<https://en.wikipedia.org/wiki/Readability>
+
+=head2 fog
+
+( words_per_sentence + percent_complex_words ) * 0.4
+
+The Fog index, developed by Robert Gunning, is a well known and simple
+formula for measuring readability. The index indicates the number of years
+of formal education a reader of average intelligence would need to read the
+text once and understand that piece of writing with its word sentence workload.
+
+ 18 unreadable
+ 14 difficult
+ 12 ideal
+ 10 acceptable
+  8 childish
+
+
+=head2 flesch
+
+206.835 - (1.015 * words_per_sentence) - (84.6 * syllables_per_word)
+
+This score rates text on a 100 point scale. The higher the score, the easier
+it is to understand the text. A score of 60 to 70 is considered to be optimal.
+
+=head2 kincaid
+
+Returns the Flesch-Kincaid grade level score for the analysed text
+file or block.
+
+(11.8 * syllables_per_word) +  (0.39 * words_per_sentence) - 15.59;
+
+This score rates text on U.S. grade school level. So a score of 8.0 means
+that the document can be understood by an eighth grader. A score of 7.0 to
+8.0 is considered to be optimal.
+
+=head2 unique_words
+
+Returns a hash of unique words. The words (in lower case) are held in
+the hash keys while the number of occurrences are held in the hash values.
+
+
+=head1 SEE ALSO
+
+L<Lingua::EN::Syllable>,L<Lingua::EN::Sentence>,
+
+
+=head1 LIMITATIONS
+
+The syllable count provided in Lingua::EN::Syllable is about 90% accurate
+The fog index should exclude proper names
+
+
+=head1 AUTHOR
+
+Lingua::EN::Fathom was written by Kim Ryan <kimryan at cpan dot org>.
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (c) 2023 Kim Ryan. All rights reserved.
+
+This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+
+=end pod
+

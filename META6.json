@@ -1,0 +1,20 @@
+{
+  "name": "Lingua::EN::Fathom",
+  "source-url": "git://github.com/kimryan/raku-Lingua-EN-Fathom.git", 
+  "raku": "6.d",
+  "auth": "zef:kimryan",
+  "author": "Kim Ryan",
+  "depends": ["Lingua::EN::Sentence","Lingua::EN::Syllable"],
+  "build-depends" : [ ],
+  "test-depends" : [ ],
+  "license": "Artistic-2.0",
+  "provides": {
+    "Lingua::EN::Fathom": "lib/Lingua/EN/Fathom.rakumod"
+  },
+  "tags": [
+    "NLP",
+    "TEXT"
+  ],  
+  "version": "0.0.1",
+  "description": "Measure readability of English text"
+}
