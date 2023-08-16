@@ -1,5 +1,5 @@
 use v6;
-unit module Lingua::EN::Fathom:ver<0.0.1>:auth<zef:kimryan> ;
+unit module Lingua::EN::Fathom:ver<0.0.3>:auth<zef:kimryan> ;
 use Lingua::EN::Syllable;
 use Lingua::EN::Sentence;
 
